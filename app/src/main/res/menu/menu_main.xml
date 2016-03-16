@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.dmitry.androidrestclient.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/select_day"
+        android:title="@string/select_day_menu" />
+    <item
+        android:id="@+id/select_month"
+        android:title="@string/select_month_menu" />
+    <item
+        android:id="@+id/select_year"
+        android:title="@string/select_year_menu" />
+</menu>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:longClickable="true"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/CreditType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:gravity="left"
+        android:textColor="@color/colorListItemPrimary"
+        android:shadowColor="@color/colorListItemShadow"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/CreditSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:paddingRight="15px"
+            android:gravity="bottom|left"
+            android:textColor="@color/colorListItemSecond" />
+        <TextView
+            android:id="@+id/CreditDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dp"
+            android:paddingLeft="15px"
+            android:gravity="bottom|right"
+            android:textColor="@color/colorListItemSecond" />
+    </LinearLayout>
+</LinearLayout>
