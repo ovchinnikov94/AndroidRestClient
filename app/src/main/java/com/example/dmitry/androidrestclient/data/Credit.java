@@ -64,4 +64,9 @@ public class Credit implements Serializable{
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof Credit) && ((Credit) o).get_id().equals(_id);
+    }
 }

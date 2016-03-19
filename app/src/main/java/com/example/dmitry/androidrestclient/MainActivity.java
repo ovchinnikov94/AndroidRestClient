@@ -38,7 +38,7 @@ import retrofit.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     private Retrofit retrofit;
-    private static final String BASE_URL = "http://192.168.1.138:1337/";
+    private static final String BASE_URL = "http://mighty-depths-10490.herokuapp.com/";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private Gson gson;
     private ListView lvMain;
