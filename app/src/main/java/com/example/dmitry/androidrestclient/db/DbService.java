@@ -73,7 +73,6 @@ public class DbService {
     }
 
     public void deleteCredit(Credit credit){
-        String[] str = {credit.get_id()};
-        db.delete(CR_TABLE, "_id", str);
+        db.delete(CR_TABLE, "_id = " + "\"" + credit.get_id() + "\"", null);
     }
 }
