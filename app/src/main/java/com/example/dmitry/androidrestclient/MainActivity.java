@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,10 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit.GsonConverterFactory;
@@ -49,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public RestService service;
     private FloatingActionButton fab;
     public DbService dbService;
+    private DrawerLayout drawerLayout;
 
     class GetCreditsTask extends AsyncTask <RestService, Void, List<Credit>> {
         @Override
@@ -130,6 +128,67 @@ public class MainActivity extends AppCompatActivity {
 
         dbService = new DbService(getApplicationContext());
 
+        initFloatingActionButton();
+        credits = dbService.selectCredits();
+        textView = (TextView)findViewById(R.id.text1);
+        initSwipeLayout();
+        initRetrofit();
+        initListViewCredits();
+        initNavigationView();
+        //GetCreditsTask task = new GetCreditsTask();
+        //task.execute(service);
+
+    }
+
+    private void initNavigationView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
+
+    }
+
+    private void initListViewCredits() {
+        lvMain = (ListView)findViewById(R.id.lvMain);
+        lvMain.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (lvMain != null && lvMain.getChildCount() > 0)
+                    if (lvMain.getFirstVisiblePosition() == 0 && lvMain.getChildAt(0).getTop() == 0)
+                        swipeLayout.setEnabled(true);
+                    else swipeLayout.setEnabled(false);
+                else
+                    swipeLayout.setEnabled(false);
+            }
+        });
+        adapter = new CreditListAdapter(this, this, credits);
+        adapter.notifyDataSetChanged();
+        lvMain.setAdapter(adapter);
+    }
+
+    private void initRetrofit() {
+        gson = new GsonBuilder()
+                .setDateFormat(DATE_FORMAT)
+                .create();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        service = retrofit.create(RestService.class);
+    }
+
+    private void initSwipeLayout() {
+        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        swipeLayout.setEnabled(true);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeLayout.setRefreshing(true);
+                GetCreditsTask getCreditsTask = new GetCreditsTask();
+                getCreditsTask.execute(service);
+                swipeLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void initFloatingActionButton() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,48 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        lvMain = (ListView)findViewById(R.id.lvMain);
-        credits = dbService.selectCredits();
-        textView = (TextView)findViewById(R.id.text1);
-        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
-
-        gson = new GsonBuilder()
-                .setDateFormat(DATE_FORMAT)
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        service = retrofit.create(RestService.class);
-
-        lvMain.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (lvMain != null && lvMain.getChildCount() > 0)
-                    if (lvMain.getFirstVisiblePosition() == 0 && lvMain.getChildAt(0).getTop() == 0)
-                        swipeLayout.setEnabled(true);
-                    else swipeLayout.setEnabled(false);
-                else
-                    swipeLayout.setEnabled(false);
-            }
-        });
-        swipeLayout.setEnabled(true);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeLayout.setRefreshing(true);
-                GetCreditsTask getCreditsTask = new GetCreditsTask();
-                getCreditsTask.execute(service);
-                swipeLayout.setRefreshing(false);
-            }
-        });
-        adapter = new CreditListAdapter(this, this, credits);
-        adapter.notifyDataSetChanged();
-        lvMain.setAdapter(adapter);
-
-        //GetCreditsTask task = new GetCreditsTask();
-        //task.execute(service);
-
     }
 
     @Override
