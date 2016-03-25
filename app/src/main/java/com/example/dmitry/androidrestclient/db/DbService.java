@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class DbService {
     private DBHelper dbHelper;
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db;
 
     public static final String CR_TABLE = "credit";
     public static final String CR_ID = "_id";
@@ -32,7 +32,7 @@ public class DbService {
         db = dbHelper.getWritableDatabase();
     }
 
-    public long saveCredit(Credit credit) {
+    public static long saveCredit(Credit credit) {
         ContentValues values = new ContentValues();
         values.put(CR_NAME, credit.getName());
         values.put(CR_SUM, String.valueOf(credit.getSum()));
@@ -41,12 +41,12 @@ public class DbService {
         return db.insertWithOnConflict(CR_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void saveCredit(List<Credit> list) {
+    public static void saveCredit(List<Credit> list) {
         for (Credit credit : list)
             saveCredit(credit);
     }
 
-    public List<Credit> selectCredits(){
+    public static List<Credit> selectCredits(){
         List<Credit> list = new ArrayList<>();
         Cursor cursor = db.query(CR_TABLE, new String[]{CR_ID, CR_NAME, CR_SUM, CR_DATE},
                 null, null, null, null, null, null);
@@ -72,7 +72,7 @@ public class DbService {
         return list;
     }
 
-    public void deleteCredit(Credit credit){
+    public static void deleteCredit(Credit credit){
         db.delete(CR_TABLE, "_id = " + "\"" + credit.get_id() + "\"", null);
     }
 }

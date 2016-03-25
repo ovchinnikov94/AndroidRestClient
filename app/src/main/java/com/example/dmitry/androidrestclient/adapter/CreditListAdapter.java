@@ -1,4 +1,4 @@
-package com.example.dmitry.androidrestclient;
+package com.example.dmitry.androidrestclient.adapter;
 
 
 import android.app.AlertDialog;
@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.dmitry.androidrestclient.fragment.CreditFragment;
+import com.example.dmitry.androidrestclient.asynctask.DeleteCreditTask;
+import com.example.dmitry.androidrestclient.MainActivity;
+import com.example.dmitry.androidrestclient.R;
 import com.example.dmitry.androidrestclient.data.Credit;
 
 import java.util.Calendar;
@@ -23,11 +27,13 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
     private final Context context;
     private final List<Credit> credits;
     private MainActivity activity;
-    public CreditListAdapter(MainActivity activity, Context context, List<Credit> objects) {
+    private CreditFragment fragment;
+    public CreditListAdapter(MainActivity activity, Context context, CreditFragment fragment, List<Credit> objects) {
         super(context, R.layout.my_list_item, objects);
         this.context = context;
         this.credits = objects;
         this.activity = activity;
+        this.fragment = fragment;
     }
 
     static class ViewHolder{
@@ -65,7 +71,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder adb = new AlertDialog.Builder(activity);
                 adb.setTitle("Deleting");
                 adb.setMessage("Are you sure you wand to delete " + credit.getName());
                 adb.setNegativeButton("Cancel", null);
@@ -74,13 +80,13 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DeleteCreditTask task = new DeleteCreditTask();
-                        if (!task.execute(credits.get(pos), activity).isCancelled()) {
+                        if (!task.execute(credits.get(pos), fragment.getFrameView(), fragment.getService()).isCancelled()) {
                             credits.remove(pos);
                             notifyDataSetChanged();
                         }
                     }
                 });
-                adb.show();
+                adb.create().show();
                 return false;
             }
         });
